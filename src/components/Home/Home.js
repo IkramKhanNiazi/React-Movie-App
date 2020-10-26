@@ -19,9 +19,15 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        this.setState({loading: true});
-        const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
-        this.fetchMovies(endpoint);
+        if (localStorage.getItem("HomeState")){
+            const state = JSON.parse(localStorage.getItem("HomeState"))
+            this.setState({...state});
+
+        }else{
+            this.setState({loading: true});
+            const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
+            this.fetchMovies(endpoint);
+        }
     }
 
     searchMovies = (searchTerm) => {
@@ -63,9 +69,9 @@ class Home extends Component {
                 totalPages: data.total_pages,
                 loading: false,
 
+            }, () => {
+                localStorage.setItem("HomeState", JSON.stringify(this.state));
             })
-            console.log(data.page);
-            
         });
     }
     
